@@ -16,7 +16,7 @@ pipeline{
           }
         
       }
-      stage('Maven Test'){
+   stage('Maven Test'){
             steps{
                script{
                   last_started=env.STAGE_NAME
@@ -50,6 +50,26 @@ pipeline{
                 waitForQualityGate abortPipeline: true
             }
         }
+     
+     stage('Deploy to artifactory'){
+        steps{
+           script{
+              last_started=env.STAGE_NAME
+            }
+        rtUpload(
+         serverId : 'Art-server',
+         spec :'''{
+           "files" :[
+           {
+           "pattern":"target/*.jar",
+           "target":"Art-dev-21"
+           }
+           ]
+         }''', 
+           
+      )
+      }
+     }
     }
     post {  
          always {  
